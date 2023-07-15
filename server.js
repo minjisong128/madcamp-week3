@@ -44,16 +44,20 @@ app.post("/log", express.json(), (req, res) => {
 
 // MySQL에 로그 데이터 삽입
 function saveLogToDatabase(url, category) {
-  const query = "INSERT INTO logs (url, category) VALUES (?, ?)";
-  const values = [url, category];
+  if (url !== "chrome://newtab/") {
+    const query = "INSERT INTO logs (url, category) VALUES (?, ?)";
+    const values = [url, category];
 
-  connection.query(query, values, (err, result) => {
-    if (err) {
-      console.error("로그 데이터 삽입 오류:", err);
-    } else {
-      console.log("로그 데이터가 MySQL에 저장되었습니다.");
-    }
-  });
+    connection.query(query, values, (err, result) => {
+      if (err) {
+        console.error("로그 데이터 삽입 오류:", err);
+      } else {
+        console.log("로그 데이터가 MySQL에 저장되었습니다.");
+      }
+    });
+  } else {
+    console.log("chrome://newtab/ URL은 로그 데이터에 저장되지 않습니다.");
+  }
 }
 
 // 카테고리 업데이트 요청 처리

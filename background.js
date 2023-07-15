@@ -39,14 +39,44 @@ function saveLog(url, category) {
 
 // 웹사이트에서 메시지 수신 및 처리
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.type === "changeCategory") {
-    const { tabId, category } = request;
-    if (tabUrls[tabId]) {
-      const url = tabUrls[tabId];
-      saveLog(url, category);
+    if (request.type === "updateCategory") {
+      const { id, category } = request;
+      updateLogCategory(id, category);
       sendResponse({ message: "카테고리 변경 완료" });
-    } else {
-      sendResponse({ message: "탭 정보 없음" });
     }
+  });
+  
+  // 카테고리 업데이트 함수
+  function updateLogCategory(id, category) {
+    // 여기에 MySQL 업데이트 로직을 추가합니다.
+    // MySQL 연결 및 쿼리 실행 코드
+    const connection = mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME
+    });
+  
+    connection.connect(function(err) {
+      if (err) {
+        console.error("MySQL 연결 오류:", err);
+      } else {
+        console.log("MySQL에 연결되었습니다.");
+        
+        // 카테고리 업데이트 쿼리 실행
+        const query = "UPDATE logs SET category = ? WHERE id = ?";
+        const values = [category, id];
+  
+        connection.query(query, values, function(err, result) {
+          if (err) {
+            console.error("카테고리 업데이트 오류:", err);
+          } else {
+            console.log("카테고리가 업데이트되었습니다.");
+          }
+  
+          // MySQL 연결 종료
+          connection.end();
+        });
+      }
+    });
   }
-});

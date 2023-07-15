@@ -1,6 +1,11 @@
+// popup.js
+
 document.addEventListener("DOMContentLoaded", function() {
     const showLogsButton = document.getElementById("showLogsButton");
     const logsList = document.getElementById("logsList");
+    const updateCategoryButton = document.getElementById("updateCategoryButton");
+    const categoryIdInput = document.getElementById("categoryIdInput");
+    const categoryInput = document.getElementById("categoryInput");
   
     // 로그 보기 버튼 클릭 이벤트 처리
     showLogsButton.addEventListener("click", function() {
@@ -26,19 +31,20 @@ document.addEventListener("DOMContentLoaded", function() {
           console.error("로그 목록 가져오기 오류:", error);
         });
     });
+  
+    // 카테고리 업데이트 버튼 클릭 이벤트 처리
+    updateCategoryButton.addEventListener("click", function() {
+      const id = categoryIdInput.value;
+      const category = categoryInput.value;
+      updateCategory(id, category);
+    });
   });
   
-    // 서버에서 로그를 가져오는 함수
-    function fetchLogsFromServer(callback) {
-      fetch("http://172.10.5.170/logs")
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(data) {
-          callback(data);
-        })
-        .catch(function(error) {
-          console.error("로그를 가져오는 중 오류 발생:", error);
-          callback([]);
-        });
-    }
+  // 팝업 스크립트인 popup.js 파일 내에서 사용자가 입력한 정보를 바탕으로 카테고리 업데이트를 호출하는 함수
+  function updateCategory(id, category) {
+    // 백그라운드 스크립트에 메시지를 보내어 카테고리 업데이트를 요청합니다.
+    chrome.runtime.sendMessage({ type: "updateCategory", id, category }, function(response) {
+      console.log(response.message);
+    });
+  }
+  
