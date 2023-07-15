@@ -1,0 +1,15 @@
+{
+  "name": "savelogserver",
+  "version": "1.0.0",
+  "description": "서버에서 로그를 제공하는 예제",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
